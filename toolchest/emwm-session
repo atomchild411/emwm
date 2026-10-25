@@ -9,6 +9,12 @@
 
 prefix=/usr/local
 
+# Display managers start sessions with a short PATH (CDE's dtlogin leaves
+# out the X programs); make sure xrdb, xsetroot and the menus' programs are
+# found.
+PATH=$prefix/bin:$PATH:/usr/X11R7/bin:/usr/X11R6/bin:/usr/pkg/bin
+export PATH
+
 # Our app-defaults first, then whatever the session already searches.
 XFILESEARCHPATH=$prefix/lib/X11/app-defaults/%N${XFILESEARCHPATH:+:$XFILESEARCHPATH}
 XFILESEARCHPATH=$XFILESEARCHPATH:/usr/X11R7/lib/X11/%T/%N%S:/usr/pkg/lib/X11/%T/%N%S

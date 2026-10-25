@@ -1,6 +1,13 @@
 ! Adds the emwm desktop to CDE dtlogin's Options > Session menu.
-! Install as <dt config dir>/C/Xresources.d/0300.emwm, e.g.
-! /usr/pkg/etc/dt/config/C/Xresources.d/0300.emwm with CDE from pkgsrc.
+! Install as <dt config dir>/C/Xresources.d/0300.emwm. CDE from pkgsrc reads
+! only /usr/pkg/dt/config/C/Xresources.d/ (its local-config path comes out
+! as /usr/pkg/usr/pkg/etc/..., a packaging slip), so use that.
+!
+! To make it a user's default instead of picking it at each login, add to
+! that user's ~/.dtprofile (read by CDE's Xsession after it sets its
+! defaults, before it starts the session):
+!	dtstart_session[0]=/usr/local/bin/emwm-session
+!	dtstart_hello[0]=/usr/bin/true
 Dtlogin*altDtsIncrement:	True
 Dtlogin*altDtName:	IRIX-style Desktop (emwm)
 Dtlogin*altDtKey:	/usr/local/bin/emwm
