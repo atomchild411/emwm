@@ -12,8 +12,8 @@ Emwm*keyboardFocusPolicy:	explicit
 Emwm*titleLeft:			True
 Emwm*irixStyle:			True
 Emwm*moveOpaque:		True
-Emwm*resizeBorderWidth:		7
-Emwm*frameBorderWidth:		7
+Emwm*resizeBorderWidth:		8
+Emwm*frameBorderWidth:		8
 Emwm*iconPlacement:		left bottom
 Emwm*workspaceCount:		1
 

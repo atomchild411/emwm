@@ -98,6 +98,9 @@ unsigned int InitTitleBarHeight (ClientData *pcd)
     if (pcd->decor & MWM_DECOR_TITLE)
     {
 	tbarheight = TitleTextHeight(pcd);
+	/* IRIX title bars have room round the text, and a black line */
+	if (pcd->pSD->irixStyle)
+	    tbarheight += 4;
     }
     else
     {

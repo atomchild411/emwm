@@ -28,6 +28,7 @@
 
 #include "WmGlobal.h"
 #include "WmXSMP.h"
+#include "WmIrix.h"
 
 
 #include <X11/cursorfont.h>
@@ -205,6 +206,13 @@ void FrameExposureProc (ClientData *pcd)
     if(pcd->fullScreen) {
 		XClearWindow(DISPLAY,win);
 		return;
+    }
+
+    /* IRIX 4Dwm-style frames are drawn by WmIrix.c */
+    if (pcd->pSD->irixStyle) {
+	IrixDrawFrame (pcd);
+	DrawWindowTitle (pcd, False);
+	return;
     }
     
     /* use "active" GCs if we have keyboard focus */
@@ -2671,6 +2679,9 @@ Boolean DepressGadget (ClientData *pcd, int gadget, Boolean depressed)
     static RList *pBotRect = NULL; 
     GC topGC, botGC;
     Window win;
+
+    if (pcd->pSD->irixStyle)
+	return IrixDepressGadget (pcd, gadget, depressed);
 
     /* get outside dimensions of box we want */
 
