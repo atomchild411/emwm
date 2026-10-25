@@ -1,0 +1,7 @@
+! Adds the emwm desktop to CDE dtlogin's Options > Session menu.
+! Install as <dt config dir>/C/Xresources.d/0300.emwm, e.g.
+! /usr/pkg/etc/dt/config/C/Xresources.d/0300.emwm with CDE from pkgsrc.
+Dtlogin*altDtsIncrement:	True
+Dtlogin*altDtName:	IRIX-style Desktop (emwm)
+Dtlogin*altDtKey:	/usr/local/bin/emwm
+Dtlogin*altDtStart:	/usr/local/bin/emwm-session

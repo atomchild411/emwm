@@ -1,0 +1,80 @@
+.TH TOOLCHEST 1 "October 2026" "emwm" "User Commands"
+.SH NAME
+toolchest \- a menu of programs, after the IRIX Interactive Desktop
+.SH SYNOPSIS
+.B toolchest
+[\fIX options\fR] [\fB\-f\fR \fImenufile\fR]
+.SH DESCRIPTION
+.B toolchest
+shows a small window with a column of buttons, each opening a menu of
+programs and desktop actions. It is meant to run alongside
+.BR emwm (1).
+.PP
+The menus are read from
+.BR ~/.toolchestrc ,
+or, if that does not exist, from the system file
+.BR system.chestrc .
+They use the menu syntax of
+.BR emwmrc (4):
+.PP
+.nf
+    Menu ToolChest
+    {
+        "Desktop"            f.menu Desktop
+    }
+
+    Menu Desktop
+    {
+        "Open Unix Shell"  _O  f.exec "xterm -ls"
+        no-label               f.separator
+        "Log Out"          _L  f.logout
+    }
+.fi
+.PP
+The menu named
+.B ToolChest
+is the column of buttons. Each entry is a label, an optional mnemonic
+(\fB_\fIx\fR) and a function:
+.TP
+.BI f.exec " command"
+Run \fIcommand\fR with /bin/sh.
+.TP
+.BI f.menu " name"
+Open the menu \fIname\fR.
+.TP
+.B f.separator
+A line between entries.
+.TP
+.B f.title
+A label that cannot be selected.
+.TP
+.B f.logout
+Ask, then end the session by sending SIGTERM to the process in
+.BR DESKTOP_SESSION_PID .
+A session script sets that to its own pid and then execs the window
+manager, so logging out stops the window manager and ends the session.
+.TP
+.B f.restart
+Read the menus again.
+.TP
+.B f.quit
+Close the Toolchest.
+.SH OPTIONS
+.TP
+.BI \-f " menufile"
+Read the menus from \fImenufile\fR.
+.SH RESOURCES
+The application class is
+.BR Toolchest .
+The column of buttons is the widget
+.BR chest .
+.SH FILES
+.TP
+.B ~/.toolchestrc
+Your menus.
+.TP
+.B system.chestrc
+The system's menus, in the X11 library directory.
+.SH SEE ALSO
+.BR emwm (1),
+.BR emwmrc (4)

@@ -1,0 +1,16 @@
+!! Toolchest application defaults
+
+!! Top-left corner, as on IRIX.
+Toolchest.geometry: +4+4
+
+!! Fonts: bold Helvetica for the buttons and menus.
+Toolchest*fontList: -*-helvetica-bold-r-normal--12-*-*-*-p-*-iso8859-1
+
+!! Neutral grey, black text.
+Toolchest*background: #aaaaaa
+Toolchest*foreground: #000000
+
+!! Buttons packed tight in one column.
+Toolchest*chest.spacing: 0
+Toolchest*chest.marginHeight: 2
+Toolchest*chest.marginWidth: 2

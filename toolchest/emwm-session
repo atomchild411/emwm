@@ -1,0 +1,26 @@
+#!/bin/sh
+# emwm-session: an IRIX-style desktop session: emwm plus the Toolchest.
+# Start it from a display manager (for CDE's dtlogin, see dtlogin.emwm) or
+# from ~/.xinitrc. Programs to start with it go in ~/.emwm-startup.
+#
+# Logging out from the Toolchest sends SIGTERM to DESKTOP_SESSION_PID, which
+# is this script's pid: the exec below makes that pid emwm, so the session
+# ends with it.
+
+prefix=/usr/local
+
+# Our app-defaults first, then whatever the session already searches.
+XFILESEARCHPATH=$prefix/lib/X11/app-defaults/%N${XFILESEARCHPATH:+:$XFILESEARCHPATH}
+XFILESEARCHPATH=$XFILESEARCHPATH:/usr/X11R7/lib/X11/%T/%N%S:/usr/pkg/lib/X11/%T/%N%S
+export XFILESEARCHPATH
+
+[ -r "$HOME/.Xdefaults" ] && xrdb -merge "$HOME/.Xdefaults"
+xsetroot -solid '#5a6878' -cursor_name left_ptr
+
+DESKTOP_SESSION_PID=$$
+export DESKTOP_SESSION_PID
+
+$prefix/bin/toolchest &
+[ -x "$HOME/.emwm-startup" ] && "$HOME/.emwm-startup" &
+
+exec $prefix/bin/emwm

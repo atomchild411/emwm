@@ -1,0 +1,77 @@
+! system.chestrc: the Toolchest's menus, in emwm's menu syntax.
+! Copy to ~/.toolchestrc to change them (Desktop > Customize does that),
+! then Desktop > Customize > Reload Toolchest.
+!
+!   "Label"  [_mnemonic]  f.exec "command" | f.menu name | f.separator |
+!                         f.title | f.logout | f.restart | f.quit
+
+Menu ToolChest
+{
+    "Desktop"		_D	f.menu Desktop
+    "Applications"	_A	f.menu Applications
+    "Find"		_F	f.menu Find
+    "System"		_S	f.menu System
+    "Help"		_H	f.menu Help
+}
+
+Menu Desktop
+{
+    "Access Files"	_A	f.menu AccessFiles
+    "Open Unix Shell"	_O	f.exec "xterm -ls -sb -title 'Unix Shell'"
+    no-label			f.separator
+    "Customize"		_C	f.menu Customize
+    no-label			f.separator
+    "Log Out"		_L	f.logout
+}
+
+Menu AccessFiles
+{
+    "In My Home Directory"	_H	f.exec "dtfile -folder $HOME"
+    "In /tmp"			_T	f.exec "dtfile -folder /tmp"
+    "In Root (/)"		_R	f.exec "dtfile -folder /"
+}
+
+Menu Customize
+{
+    "Toolchest Menus..."	_T	f.exec "[ -f $HOME/.toolchestrc ] || cp /usr/local/lib/X11/system.chestrc $HOME/.toolchestrc; xterm -title 'Toolchest Menus' -e vi $HOME/.toolchestrc"
+    "Window Manager Menus..."	_W	f.exec "[ -f $HOME/.emwmrc ] || cp /usr/local/lib/X11/system.emwmrc $HOME/.emwmrc; xterm -title 'Window Manager Menus' -e vi $HOME/.emwmrc"
+    no-label				f.separator
+    "Reload Toolchest"		_R	f.restart
+}
+
+Menu Applications
+{
+    "Text Editor"	_T	f.exec "dtpad"
+    "Calculator"	_C	f.exec "xcalc"
+    "Clock"		_l	f.exec "xclock"
+    "Calendar"		_a	f.exec "dtcm"
+    "Mail"		_M	f.exec "dtmail"
+    no-label			f.separator
+    "Icon Editor"	_I	f.exec "dticon"
+    "Font Selector"	_F	f.exec "xfontsel"
+    "Magnifier"		_g	f.exec "xmag"
+}
+
+Menu Find
+{
+    "Manual Pages"	_M	f.exec "xman"
+    "Help Viewer"	_H	f.exec "dthelpview"
+}
+
+Menu System
+{
+    "Process Monitor"		_P	f.exec "xterm -title 'Process Monitor' -e top"
+    "Load Meter"		_L	f.exec "xload"
+    "Disk Usage"		_D	f.exec "xterm -title 'Disk Usage' -hold -e df -h"
+    "System Information"	_S	f.exec "xterm -title 'System Information' -hold -e sh -c 'uname -a; echo; sysctl hw.model hw.ncpu hw.physmem64; echo; uptime'"
+    "Display Information"	_i	f.exec "xterm -title 'Display Information' -hold -e xdpyinfo"
+    no-label				f.separator
+    "Kill a Window"		_K	f.exec "xkill"
+}
+
+Menu Help
+{
+    "About This Desktop"	_A	f.exec "xmessage -center 'emwm with a Toolchest, after the IRIX Interactive Desktop.'"
+    "Window Manager Manual"	_W	f.exec "xterm -title 'emwm(1)' -e man emwm"
+    "Toolchest Manual"		_T	f.exec "xterm -title 'toolchest(1)' -e man toolchest"
+}
