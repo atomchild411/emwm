@@ -1,0 +1,68 @@
+!! Emwm-irix.ad: emwm and the Toolchest made to look like IRIX 6.5's
+!! Interactive Desktop. emwm-session merges this with xrdb; your own
+!! ~/.Xdefaults is merged after it and wins.
+!!
+!! Colours were measured on IRIX 6.5.22's default scheme: unfocused frames
+!! are neutral grey, the focused frame is a warm beige, menus light grey.
+
+Emwm*configFile:		/usr/local/lib/X11/irix/irix.emwmrc
+Emwm*windowMenu:		IrixWindowMenu
+Emwm*buttonBindings:		ExplicitButtonBindings
+Emwm*keyboardFocusPolicy:	explicit
+Emwm*titleLeft:			True
+Emwm*moveOpaque:		True
+Emwm*resizeBorderWidth:		7
+Emwm*frameBorderWidth:		7
+Emwm*iconPlacement:		left bottom
+Emwm*workspaceCount:		1
+
+!! Bold oblique Helvetica (core X bitmap fonts, as on IRIX) for titles and
+!! menus, medium oblique for icon labels. emwm takes its fonts as render
+!! tables: variable (menus, dialogs), title and icon.
+Emwm*renderTable:			variable
+Emwm*renderTable.variable.fontType:	FONT_IS_FONT
+Emwm*renderTable.variable.fontName:	-*-helvetica-bold-o-normal--14-*-*-*-p-*-iso8859-1
+Emwm*title.renderTable:			title
+Emwm*renderTable.title.fontType:	FONT_IS_FONT
+Emwm*renderTable.title.fontName:	-*-helvetica-bold-o-normal--14-*-*-*-p-*-iso8859-1
+Emwm*icon.renderTable:			icon
+Emwm*renderTable.icon.fontType:		FONT_IS_FONT
+Emwm*renderTable.icon.fontName:		-*-helvetica-medium-o-normal--12-*-*-*-p-*-iso8859-1
+
+!! Unfocused frames and icons.
+Emwm*client*background:		#aaaaaa
+Emwm*client*foreground:		#000000
+Emwm*client*topShadowColor:	#dcdcdc
+Emwm*client*bottomShadowColor:	#737373
+Emwm*icon*background:		#aaaaaa
+Emwm*icon*foreground:		#000000
+Emwm*icon*topShadowColor:	#dcdcdc
+Emwm*icon*bottomShadowColor:	#737373
+
+!! The focused frame.
+Emwm*client*activeBackground:		#c5c1aa
+Emwm*client*activeForeground:		#000000
+Emwm*client*activeTopShadowColor:	#e9e7de
+Emwm*client*activeBottomShadowColor:	#8b8777
+Emwm*icon*activeBackground:		#c5c1aa
+Emwm*icon*activeForeground:		#000000
+Emwm*icon*activeTopShadowColor:		#e9e7de
+Emwm*icon*activeBottomShadowColor:	#8b8777
+
+!! Menus and the move/size feedback box.
+Emwm*menu*background:		#d8d8d8
+Emwm*menu*foreground:		#000000
+Emwm*menu*topShadowColor:	#f1f1f1
+Emwm*menu*bottomShadowColor:	#9d9d9d
+Emwm*feedback*background:	#d8d8d8
+Emwm*feedback*foreground:	#000000
+
+!! The desktop: IRIX's teal and grey speckle.
+Emwm*backdrop*image:		/usr/local/lib/X11/irix/speckle.xpm
+
+!! The Toolchest.
+Toolchest*fontList:		-*-helvetica-bold-o-normal--14-*-*-*-p-*-iso8859-1
+Toolchest*background:		#d8d8d8
+Toolchest*foreground:		#000000
+Toolchest*topShadowColor:	#f1f1f1
+Toolchest*bottomShadowColor:	#9d9d9d

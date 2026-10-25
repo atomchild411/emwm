@@ -14,8 +14,10 @@ XFILESEARCHPATH=$prefix/lib/X11/app-defaults/%N${XFILESEARCHPATH:+:$XFILESEARCHP
 XFILESEARCHPATH=$XFILESEARCHPATH:/usr/X11R7/lib/X11/%T/%N%S:/usr/pkg/lib/X11/%T/%N%S
 export XFILESEARCHPATH
 
+# The IRIX look (irix/ in the emwm sources), then your own resources.
+[ -r $prefix/lib/X11/irix/Emwm-irix.ad ] && xrdb -nocpp -merge $prefix/lib/X11/irix/Emwm-irix.ad
 [ -r "$HOME/.Xdefaults" ] && xrdb -merge "$HOME/.Xdefaults"
-xsetroot -solid '#5a6878' -cursor_name left_ptr
+xsetroot -cursor_name left_ptr
 
 DESKTOP_SESSION_PID=$$
 export DESKTOP_SESSION_PID
