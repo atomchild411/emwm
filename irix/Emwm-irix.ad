@@ -53,8 +53,8 @@ Emwm*icon*activeBottomShadowColor:	#8b8777
 !! Menus and the move/size feedback box.
 Emwm*menu*background:		#d8d8d8
 Emwm*menu*foreground:		#000000
-Emwm*menu*topShadowColor:	#f1f1f1
-Emwm*menu*bottomShadowColor:	#9d9d9d
+Emwm*menu*topShadowColor:	#f4f4f4
+Emwm*menu*bottomShadowColor:	#909090
 Emwm*feedback*background:	#d8d8d8
 Emwm*feedback*foreground:	#000000
 
@@ -80,3 +80,47 @@ XTerm*saveLines:		2000
 XTerm*font:			7x14
 XTerm*scrollbar.background:	#bdbdbd
 XTerm*scrollbar.foreground:	#e0e0e0
+
+!! Menus as IRIS IM draws them: a black outline and thin bevels, the armed
+!! entry near-white with a black bottom and right edge, and stroked
+!! mnemonics. enableIrixStyle needs Motif built with it (atomchild411/motif,
+!! branch irix); the colour trick below (black "top" shadow, which a sunken
+!! armed entry draws bottom and right) works with any Motif.
+Emwm*enableIrixStyle:		True
+Emwm*enableThinThickness:	True
+Emwm*enableEtchedInMenu:	True
+Toolchest*enableIrixStyle:	True
+Toolchest*enableThinThickness:	True
+Toolchest*enableEtchedInMenu:	True
+Emwm*menu*XmRowColumn.shadowThickness:		2
+Toolchest*XmRowColumn.shadowThickness:		2
+Toolchest*XmRowColumn.background:		#d8d8d8
+Toolchest*XmRowColumn.topShadowColor:		#f4f4f4
+Toolchest*XmRowColumn.bottomShadowColor:	#909090
+Emwm*menu*armColor:				#f4f4f4
+Emwm*menu*XmPushButtonGadget.topShadowColor:	#000000
+Emwm*menu*XmPushButtonGadget.bottomShadowColor:	#f4f4f4
+Emwm*menu*XmCascadeButtonGadget.topShadowColor:	#000000
+Emwm*menu*XmCascadeButtonGadget.bottomShadowColor:	#f4f4f4
+Emwm*menu*XmSeparatorGadget.topShadowColor:	#f4f4f4
+Emwm*menu*XmSeparatorGadget.bottomShadowColor:	#909090
+Toolchest*XmRowColumn*armColor:			#f4f4f4
+Toolchest*XmRowColumn*XmPushButton.topShadowColor:	#000000
+Toolchest*XmRowColumn*XmPushButton.bottomShadowColor:	#f4f4f4
+Toolchest*XmRowColumn*XmCascadeButton.topShadowColor:	#000000
+Toolchest*XmRowColumn*XmCascadeButton.bottomShadowColor:	#f4f4f4
+Toolchest*XmRowColumn*XmSeparator.topShadowColor:	#f4f4f4
+Toolchest*XmRowColumn*XmSeparator.bottomShadowColor:	#909090
+
+!! Dialog push buttons as IRIS IM draws them (with enableIrixStyle): a dark
+!! outline around a two-tone bevel, a face darker than the dialog, and a
+!! return glyph on the default button.
+Emwm*feedback*XmPushButtonGadget.shadowThickness:	4
+Emwm*feedback*XmPushButtonGadget.background:	#bdbdbd
+Emwm*feedback*XmPushButtonGadget.marginWidth:	10
+Emwm*feedback*XmPushButtonGadget.marginHeight:	4
+Emwm*feedback*XmMessageBox*highlightThickness:	0
+!! Dialogs set their text upright, unlike menus.
+Emwm*feedback*XmMessageBox*renderTable:	dialog
+Emwm*dialog.fontType:			FONT_IS_FONT
+Emwm*dialog.fontName:			-*-helvetica-medium-r-normal--14-*-*-*-p-*-iso8859-1

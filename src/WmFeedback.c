@@ -802,8 +802,12 @@ void ConfirmAction (WmScreenData *pSD, int nbr)
 
         n = 0;
         XtSetArg (args[n], XmNtraversalOn, (XtArgVal) TRUE); n++;
-        XtSetArg (args[n], XmNhighlightThickness, 
-		  (XtArgVal) CB_HIGHLIGHT_THICKNESS); n++;
+        /* IRIX style leaves the focus highlight to resources (none). */
+        if (!pSD->irixStyle)
+        {
+            XtSetArg (args[n], XmNhighlightThickness,
+		      (XtArgVal) CB_HIGHLIGHT_THICKNESS); n++;
+        }
 #ifndef NO_MESSAGE_CATALOG
 	    XtSetArg(args[n], XmNlabelString, wmGD.okLabel); n++;
 #endif
