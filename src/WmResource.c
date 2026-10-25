@@ -1334,6 +1334,16 @@ XtResource wmScreenResources[] =
 	(XtPointer) False
     },
 
+	{
+	WmNirixStyle,
+	WmCIrixStyle,
+	XtRBoolean,
+	sizeof(Boolean),
+	XtOffsetOf(WmScreenData, irixStyle),
+	XtRImmediate,
+	(XtPointer) False
+    },
+
     {
 	WmNinitialWorkspace,
 	WmCInitialWorkspace,

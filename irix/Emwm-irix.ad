@@ -10,6 +10,7 @@ Emwm*windowMenu:		IrixWindowMenu
 Emwm*buttonBindings:		ExplicitButtonBindings
 Emwm*keyboardFocusPolicy:	explicit
 Emwm*titleLeft:			True
+Emwm*irixStyle:			True
 Emwm*moveOpaque:		True
 Emwm*resizeBorderWidth:		7
 Emwm*frameBorderWidth:		7
@@ -66,3 +67,4 @@ Toolchest*background:		#d8d8d8
 Toolchest*foreground:		#000000
 Toolchest*topShadowColor:	#f1f1f1
 Toolchest*bottomShadowColor:	#9d9d9d
+Toolchest*title.background:	#aaaaaa

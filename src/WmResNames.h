@@ -131,6 +131,7 @@
 #define WmNtopShadowColor		"topShadowColor"
 #define WmNtopShadowPixmap		"topShadowPixmap"
 #define WmNtitleLeft            "titleLeft"
+#define WmNirixStyle            "irixStyle"
 
 /* mwm - client specific resources: */
 
@@ -295,6 +296,7 @@
 #define WmCTopShadowColor		"TopShadowColor"
 #define WmCTopShadowPixmap		"TopShadowPixmap"
 #define WmCTitleLeft            "TitleLeft"
+#define WmCIrixStyle            "IrixStyle"
 
 /* mwm - client specific resources: */
 

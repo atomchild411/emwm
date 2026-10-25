@@ -16,6 +16,10 @@
  *	    "Log Out"		_L	f.logout
  *	}
  *
+ * The window looks like IRIX's Toolchest: no window manager frame, a
+ * "Toolchest" tab to drag it by, and a row per entry, with a chest icon on
+ * the rows that open a menu; the menu opens beside the row.
+ *
  * Functions:
  *	f.exec "command"	run command with /bin/sh
  *	f.menu name		a submenu
@@ -49,6 +53,7 @@
 
 #include <Xm/Xm.h>
 #include <Xm/CascadeB.h>
+#include <Xm/Form.h>
 #include <Xm/Label.h>
 #include <Xm/MessageB.h>
 #include <Xm/MwmUtil.h>
@@ -101,10 +106,35 @@ static struct menu *menus;
 static char **saved_argv;
 static Widget toplevel;
 
+/* A top-level entry: its row, and its menu if it has one. */
+struct chest_row {
+	Widget row;
+	Widget popup;
+	struct item *it;
+};
+
+/* Where the pointer was while the tab is dragged. */
+static int drag_x, drag_y;
+
+/* The chest icon on rows that open a menu: a box with a lid. */
+#define chest_width 12
+#define chest_height 15
+static unsigned char chest_bits[] = {
+	0xfc, 0x03, 0x02, 0x04, 0xfe, 0x07, 0x02, 0x0c, 0x02, 0x0c,
+	0x02, 0x0c, 0x02, 0x0c, 0x02, 0x0c, 0x02, 0x0c, 0x02, 0x0c,
+	0x02, 0x0c, 0x02, 0x0c, 0x02, 0x0c, 0xfe, 0x0f, 0xfc, 0x0f,
+};
+
 static String fallback_resources[] = {
-	"Toolchest*fontList: -*-helvetica-bold-r-normal--12-*-*-*-p-*-iso8859-1",
+	"Toolchest*fontList: -*-helvetica-bold-o-normal--14-*-*-*-p-*-iso8859-1",
 	"Toolchest.geometry: +4+4",
-	"Toolchest*chest.spacing: 0",
+	"Toolchest*background: #d8d8d8",
+	"Toolchest*title.background: #aaaaaa",
+	"Toolchest*title.marginWidth: 8",
+	"Toolchest*title.marginHeight: 2",
+	"Toolchest*row*label.marginWidth: 8",
+	"Toolchest*row*label.marginHeight: 4",
+	"Toolchest*row*icon.marginWidth: 6",
 	NULL
 };
 
@@ -431,6 +461,154 @@ fill(Widget parent, struct menu *m)
 	m->building = 0;
 }
 
+/* Drag the window by its tab. */
+static void
+tab_drag(Widget w, XtPointer client, XEvent *ev, Boolean *cont)
+{
+	Position x, y;
+
+	if (ev->type == ButtonPress) {
+		drag_x = ev->xbutton.x_root;
+		drag_y = ev->xbutton.y_root;
+	} else if (ev->type == MotionNotify) {
+		XtVaGetValues(toplevel, XmNx, &x, XmNy, &y, NULL);
+		XtVaSetValues(toplevel,
+		    XmNx, (Position)(x + ev->xmotion.x_root - drag_x),
+		    XmNy, (Position)(y + ev->xmotion.y_root - drag_y), NULL);
+		drag_x = ev->xmotion.x_root;
+		drag_y = ev->xmotion.y_root;
+	}
+}
+
+/* A press on a row opens its menu beside it, or runs its function. */
+static void
+row_press(Widget w, XtPointer client, XEvent *ev, Boolean *cont)
+{
+	struct chest_row *r = client;
+	Position x, y;
+	Dimension width;
+
+	if (ev->type != ButtonPress || ev->xbutton.button != Button1)
+		return;
+	if (r->popup == NULL) {
+		activate(w, r->it, NULL);
+		return;
+	}
+	XtVaGetValues(r->row, XmNwidth, &width, NULL);
+	XtTranslateCoords(r->row, (Position)width, 0, &x, &y);
+	ev->xbutton.x_root = x;
+	ev->xbutton.y_root = y;
+	XmMenuPosition(r->popup, &ev->xbutton);
+	XtManageChild(r->popup);
+}
+
+static void
+on_press(Widget w, struct chest_row *r)
+{
+	XtAddEventHandler(w, ButtonPressMask, False, row_press, r);
+}
+
+/*
+ * The window: the tab, then a row for each entry of the top menu, with a
+ * line between rows.
+ */
+static void
+build_chest(Widget parent, struct menu *top)
+{
+	Widget chest, tab, prev, row, label, icon;
+	struct chest_row *r;
+	struct menu *sub;
+	struct item *it;
+	XmString xs;
+	Pixel fg, bg;
+	Pixmap pm;
+
+	/* Black showing through a one-pixel margin outlines the whole. */
+	chest = XtVaCreateManagedWidget("chest", xmFormWidgetClass, parent,
+	    XmNbackground, BlackPixelOfScreen(XtScreen(parent)),
+	    XmNmarginWidth, 1,
+	    XmNmarginHeight, 1,
+	    NULL);
+	xs = XmStringCreateLocalized("Toolchest");
+	prev = tab = XtVaCreateManagedWidget("title", xmLabelWidgetClass,
+	    chest,
+	    XmNlabelString, xs,
+	    XmNalignment, XmALIGNMENT_BEGINNING,
+	    XmNtopAttachment, XmATTACH_FORM,
+	    XmNleftAttachment, XmATTACH_FORM,
+	    XmNrightAttachment, XmATTACH_FORM,
+	    NULL);
+	XmStringFree(xs);
+	XtAddEventHandler(tab, ButtonPressMask | Button1MotionMask, False,
+	    tab_drag, NULL);
+
+	for (it = top->items; it != NULL; it = it->next) {
+		if (it->fn == F_SEPARATOR || it->fn == F_TITLE)
+			continue;
+		prev = XtVaCreateManagedWidget("separator",
+		    xmSeparatorWidgetClass, chest,
+		    XmNseparatorType, prev == tab ? XmSINGLE_LINE :
+			XmSHADOW_ETCHED_IN,
+		    XmNmargin, 0,
+		    XmNtopAttachment, XmATTACH_WIDGET,
+		    XmNtopWidget, prev,
+		    XmNleftAttachment, XmATTACH_FORM,
+		    XmNrightAttachment, XmATTACH_FORM,
+		    NULL);
+		row = XtVaCreateManagedWidget("row", xmFormWidgetClass, chest,
+		    XmNtopAttachment, XmATTACH_WIDGET,
+		    XmNtopWidget, prev,
+		    XmNleftAttachment, XmATTACH_FORM,
+		    XmNrightAttachment, XmATTACH_FORM,
+		    NULL);
+		r = xmalloc(sizeof *r);
+		r->row = row;
+		r->it = it;
+		sub = it->fn == F_MENU ? find_menu(it->arg) : NULL;
+		if (it->fn == F_MENU && sub == NULL)
+			fprintf(stderr, "toolchest: menu %s: not defined\n",
+			    it->arg);
+		icon = NULL;
+		if (sub != NULL) {
+			r->popup = XmCreatePopupMenu(row, sub->name, NULL, 0);
+			XtVaSetValues(r->popup, XmNmenuPost, "<Btn1Down>",
+			    NULL);
+			fill(r->popup, sub);
+			icon = XtVaCreateManagedWidget("icon",
+			    xmLabelWidgetClass, row,
+			    XmNlabelType, XmPIXMAP,
+			    XmNtopAttachment, XmATTACH_FORM,
+			    XmNbottomAttachment, XmATTACH_FORM,
+			    XmNrightAttachment, XmATTACH_FORM,
+			    NULL);
+			XtVaGetValues(icon, XmNforeground, &fg,
+			    XmNbackground, &bg, NULL);
+			pm = XCreatePixmapFromBitmapData(XtDisplay(icon),
+			    RootWindowOfScreen(XtScreen(icon)),
+			    (char *)chest_bits, chest_width, chest_height,
+			    fg, bg, DefaultDepthOfScreen(XtScreen(icon)));
+			XtVaSetValues(icon, XmNlabelPixmap, pm, NULL);
+			on_press(icon, r);
+		}
+		xs = XmStringCreateLocalized(it->label);
+		label = XtVaCreateManagedWidget("label", xmLabelWidgetClass,
+		    row,
+		    XmNlabelString, xs,
+		    XmNalignment, XmALIGNMENT_BEGINNING,
+		    XmNtopAttachment, XmATTACH_FORM,
+		    XmNbottomAttachment, XmATTACH_FORM,
+		    XmNleftAttachment, XmATTACH_FORM,
+		    XmNrightAttachment, icon != NULL ? XmATTACH_WIDGET :
+			XmATTACH_FORM,
+		    XmNrightWidget, icon,
+		    NULL);
+		XmStringFree(xs);
+		on_press(label, r);
+		on_press(row, r);
+		prev = row;
+	}
+}
+
 /* Without a menu file: a shell and a way out. */
 static void
 default_menus(void)
@@ -453,13 +631,9 @@ int
 main(int argc, char **argv)
 {
 	XtAppContext app;
-	Widget chest;
 	struct menu *top;
 	char path[1024];
 	const char *home, *file = NULL;
-	Arg args[4];
-	int n = 0;
-
 	saved_argv = argv;
 	XtSetLanguageProc(NULL, NULL, NULL);
 	toplevel = XtVaOpenApplication(&app, "Toolchest", NULL, 0, &argc, argv,
@@ -467,9 +641,8 @@ main(int argc, char **argv)
 	    XmNtitle, "Toolchest",
 	    XmNiconName, "Toolchest",
 	    XmNallowShellResize, True,
-	    XmNmwmDecorations, MWM_DECOR_BORDER | MWM_DECOR_TITLE |
-		MWM_DECOR_MENU | MWM_DECOR_MINIMIZE,
-	    XmNmwmFunctions, MWM_FUNC_MOVE | MWM_FUNC_MINIMIZE,
+	    XmNmwmDecorations, 0,
+	    XmNmwmFunctions, MWM_FUNC_MOVE,
 	    NULL);
 	if (argc == 3 && strcmp(argv[1], "-f") == 0)
 		file = argv[2];
@@ -503,11 +676,7 @@ main(int argc, char **argv)
 		top = find_menu(TOP_MENU);
 	}
 
-	XtSetArg(args[n], XmNorientation, XmVERTICAL); n++;
-	XtSetArg(args[n], XmNpacking, XmPACK_COLUMN); n++;
-	chest = XmCreateMenuBar(toplevel, "chest", args, n);
-	fill(chest, top);
-	XtManageChild(chest);
+	build_chest(toplevel, top);
 
 	XtRealizeWidget(toplevel);
 	XtAppMainLoop(app);

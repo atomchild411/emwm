@@ -1169,6 +1169,7 @@ typedef struct _WmScreenData
     Boolean	useIconBox;			/* resource */
     Boolean moveOpaque;    /* move window not outlines */
     Boolean titleLeft;
+    Boolean irixStyle;	/* IRIX 4Dwm-style decorations */
 
     /* pixel set info (from color object) */
     XmPixelSet	*pPixelData;		/* all pixel data */

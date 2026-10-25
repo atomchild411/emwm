@@ -56,6 +56,10 @@ static void GenerateFrameDisplayLists(ClientData *pcd);
 static void CreateStretcherWindows(ClientData *pcd);
 static Boolean AllocateGadgetRectangles(ClientData *pcd);
 static void ComputeGadgetRectangles(ClientData *pcd);
+static void BevelIrixSystemButton(RList *prTop, RList *prBot, int x, int y,
+				  unsigned int width, unsigned int height);
+static void BevelIrixMaximizeButton(RList *prTop, RList *prBot, int x, int y,
+				    unsigned int height);
 
 /*
  * Global Variables:
@@ -903,8 +907,12 @@ static void GenerateFrameDisplayLists (ClientData *pcd)
 
 
 	/* system icon */
-	BevelSystemButton (prlTop, prlBot, 
-			   x-xAdj, y-yAdj, width, height);
+	if (pcd->pSD->irixStyle)
+	    BevelIrixSystemButton (prlTop, prlBot,
+				   x-xAdj, y-yAdj, width, height);
+	else
+	    BevelSystemButton (prlTop, prlBot, 
+			       x-xAdj, y-yAdj, width, height);
     }
 		    
     if (decoration & MWM_DECOR_MINIMIZE) { 
@@ -955,7 +963,15 @@ static void GenerateFrameDisplayLists (ClientData *pcd)
 	}
 
 	/* maximize icon - in or out depending on client state */
-	if (pcd->maxConfig) {
+	if (pcd->pSD->irixStyle) {
+	    if (pcd->maxConfig)
+		BevelIrixMaximizeButton(prlBot, prlTop,
+					x-xAdj, y-yAdj, height);
+	    else
+		BevelIrixMaximizeButton(prlTop, prlBot,
+					x-xAdj, y-yAdj, height);
+	}
+	else if (pcd->maxConfig) {
 	    BevelMaximizeButton(prlBot, 
 				prlTop,
 				x-xAdj, y-yAdj, height);
@@ -2577,6 +2593,44 @@ void BevelMaximizeButton (RList *prTop, RList *prBot, int x, int y,
 		    dim1, dim2,
 		    1, 1, 1, 1);
 } /* END OF FUNCTION  BevelMaximizeButton   */
+
+
+/*
+ * IRIX 4Dwm-style glyphs (irixStyle): the Window menu button holds a long,
+ * thin bar, and the maximize button a tall upright box instead of a square.
+ * Both fall back to the usual glyphs when the title bar is too small.
+ */
+static void BevelIrixSystemButton (RList *prTop, RList *prBot, int x, int y,
+				   unsigned int width, unsigned int height)
+{
+    unsigned int barHeight = 3;
+
+    if (width < 10 || height < 10) {
+	BevelSystemButton (prTop, prBot, x, y, width, height);
+	return;
+    }
+    BevelRectangle (prTop, prBot,
+		    x + 3, y + (height - barHeight) / 2,
+		    width - 6, barHeight,
+		    1, 1, 1, 1);
+}
+
+static void BevelIrixMaximizeButton (RList *prTop, RList *prBot, int x, int y,
+				     unsigned int height)
+{
+    unsigned int boxHeight, boxWidth;
+
+    if (height < 12) {
+	BevelMaximizeButton (prTop, prBot, x, y, height);
+	return;
+    }
+    boxHeight = height - 6;
+    boxWidth = (boxHeight * 2) / 3;
+    BevelRectangle (prTop, prBot,
+		    x + (height - boxWidth) / 2, y + 3,
+		    boxWidth, boxHeight,
+		    1, 1, 1, 1);
+}
 
 
 /*************************************<->*************************************

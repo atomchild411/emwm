@@ -3,14 +3,17 @@
 !! Top-left corner, as on IRIX.
 Toolchest.geometry: +4+4
 
-!! Fonts: bold Helvetica for the buttons and menus.
-Toolchest*fontList: -*-helvetica-bold-r-normal--12-*-*-*-p-*-iso8859-1
+!! Bold oblique Helvetica for the entries and menus.
+Toolchest*fontList: -*-helvetica-bold-o-normal--14-*-*-*-p-*-iso8859-1
 
-!! Neutral grey, black text.
-Toolchest*background: #aaaaaa
+!! Light grey rows under a darker tab, black text.
+Toolchest*background: #d8d8d8
 Toolchest*foreground: #000000
+Toolchest*title.background: #aaaaaa
+Toolchest*title.marginWidth: 8
+Toolchest*title.marginHeight: 2
 
-!! Buttons packed tight in one column.
-Toolchest*chest.spacing: 0
-Toolchest*chest.marginHeight: 2
-Toolchest*chest.marginWidth: 2
+!! Room around each entry and its chest icon.
+Toolchest*row*label.marginWidth: 8
+Toolchest*row*label.marginHeight: 4
+Toolchest*row*icon.marginWidth: 6
