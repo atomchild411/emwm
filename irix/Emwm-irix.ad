@@ -68,3 +68,15 @@ Toolchest*foreground:		#000000
 Toolchest*topShadowColor:	#f1f1f1
 Toolchest*bottomShadowColor:	#9d9d9d
 Toolchest*title.background:	#aaaaaa
+
+!! Unix Shell windows (xterm) like IRIX's winterm: navy, light grey text,
+!! the scrollbar on the left, a green block cursor.
+XTerm*background:		#000070
+XTerm*foreground:		#e6e6e6
+XTerm*cursorColor:		#00ff00
+XTerm*scrollBar:		True
+XTerm*rightScrollBar:		False
+XTerm*saveLines:		2000
+XTerm*font:			7x14
+XTerm*scrollbar.background:	#bdbdbd
+XTerm*scrollbar.foreground:	#e0e0e0
